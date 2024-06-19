@@ -2,6 +2,10 @@ global.DEBUG = true;
 
 const fs = require('fs');
 
+const {initializeApplication} = require('./init.js')
+const {configApplication} = require('./config.js')
+const {tokenApplication} = require('./token.js')
+
 const myArgs = process.argv.slice(2); // Skip the first two arguments
 
 if (DEBUG) {
@@ -12,30 +16,31 @@ switch (myArgs[0]) {
     case 'init':
     case 'i':
         if (DEBUG) console.log(myArgs[0], '- init the app.');
+        initializeApplication();
         break;
+
     case 'config':
     case 'c':
         if (DEBUG) console.log(myArgs[0], '- create the config folders and files.');
+        configApplication();
         break;
     case 'token':
     case 't':
         if (DEBUG) console.log(myArgs[0], '- manage the tokens.');
+        tokenApplication();
         break;
+        
     case '--help':
     case '--h':
     default:
         if (DEBUG) console.log(myArgs[0], '- display help');
-        // Read the help file
-        fs.readFile('help.txt', 'utf8', (err, data) => {
-            if (err) {
-                if (err.code === 'ENOENT') {
-                    console.error('Help file not found. Please create a help.txt file.');
-                } else {
-                    console.error('Error reading help file:', err);
-                }
-                return;
-            }
-            console.log(data);
+        fs.readFile(__dirname + "/usage.txt", (error, data) => {
+            if(error) throw error;
+            console.log(data.toString());
         });
         break;
 }
+
+
+
+     
