@@ -1,8 +1,13 @@
 global.DEBUG = true;
 
 const fs = require('fs');
+
 const path = require('path');
+
+
 const { initializeApplication } = require('./init.js');
+const {configApplication} = require('./config.js')
+const {tokenApplication} = require('./token.js')
 
 // Load the configuration JSON
 const configPath = path.join(__dirname, 'config.json');
@@ -30,12 +35,12 @@ switch (myArgs[0]) {
     case 'config':
     case 'c':
         if (DEBUG) console.log(myArgs[0], '- create the config folders and files.');
-        // Add your config logic here
+       configApplication();
         break;
     case 'token':
     case 't':
         if (DEBUG) console.log(myArgs[0], '- manage the tokens.');
-        // Add your token management logic here
+        tokenApplication();
         break;
     case '--help':
     case '--h':
