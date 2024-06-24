@@ -1,7 +1,7 @@
 global.DEBUG = true;
 
 const fs = require('fs');
-const myEventEmitter = require('./logEvents');
+const myEventEmitter = require('./logEvents.js');
 
 const path = require('path');
 
