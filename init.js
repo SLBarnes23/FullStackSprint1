@@ -2,6 +2,8 @@ const fs = require('fs');
 const fsPromises = require('fs').promises;
 const path = require('path');
 
+const myEventEmitter = require('./logEvents');
+
 const myArgs = process.argv.slice(2);
 
 const folders = ['models', 'views', 'routes', 'logs', 'json'];
@@ -15,25 +17,34 @@ const configjson = {
     database: 'exampledb'
 };
 
-async function createFiles() {
+function createFiles() {
     if (DEBUG) console.log('init.createFiles()');
     try {
         let configdata = JSON.stringify(configjson, null, 2);
-        const configPath = path.join(__dirname, './json/config.json');
-        if (!fs.existsSync(configPath)) {
-            await fsPromises.writeFile(configPath, configdata);
-            console.log('Data written to config file.');
+        let fileName = './json/config.json';
+        if (!fs.existsSync(path.join(__dirname, fileName))) {
+            fs.writeFile(fileName, configdata, (err) => {
+                if (err) {
+                    if (err.code == 'ENOENT') {
+                        myEventEmitter.emit('event', fileName, 'ERROR', 'The ${fileName}  was in error, no file or directory.');
+                        console.log('No file or directory, has the directory been created');
+                    } else {
+                        console.log(err);
+                    }
+                } else {
+                    myEventEmitter.emit('event', fileName, 'INFO', 'The ${fileName}  was successfully written to disk.');
+                    console.log('Data written to config file.');
+                }
+            });
         } else {
             console.log('Config file already exists');
         }
-    } catch (err) {
-        if (err.code === 'ENOENT') {
-            console.log('No file or directory');
-        } else {
-            console.log(err);
-        }
+    } catch (error) {
+        console.error('Error creating files:', error);
     }
 }
+
+
 
 async function createFolders() {
     if (DEBUG) console.log('init.createFolders()');
