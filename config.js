@@ -41,11 +41,17 @@ function setConfig() {
             });
         });
     }
+    function resetConfig() {
+        if(DEBUG) console.log('config.resetConfig()');
+        fs.readFile(__dirname + "/json/config.json", (error, data) => {
+            if(error) throw error; // should write a log event for the error
+            fs.writeFile(__dirname + '/json/config.json', data, (error) => {
+                if(error) throw error;
+                if(DEBUG) console.log('Config file successfully reset to default.');
+            });
+        });
+    }
 
-// Export the function if needed
-module.exports = {
-    setConfig
-};
 
 function configApplication() {
     if(DEBUG) console.log('configApplication()');
@@ -57,6 +63,7 @@ function configApplication() {
         break;
     case '--reset':
         if(DEBUG) console.log('--reset');
+        resetConfig();
         break;
     case '--set':
         if(DEBUG) console.log('--set');
