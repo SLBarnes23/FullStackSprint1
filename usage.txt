@@ -18,3 +18,5 @@ myapp token            manage the user tokens
 myapp token --list     list all the tokens
 myapp token --count    provide a count of all the tokens
 myapp token --new      add a new token
+myapp token --update-user  update existing user
+myapp token --search-user  search for a specific user
