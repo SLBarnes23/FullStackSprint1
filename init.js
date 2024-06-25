@@ -21,46 +21,50 @@ function createFiles() {
     if (DEBUG) console.log('init.createFiles()');
     try {
         let configdata = JSON.stringify(configjson, null, 2);
-        let fileName = './json/config.json';
-        if (!fs.existsSync(path.join(__dirname, fileName))) {
+        let fileName = path.join(__dirname, './json/config.json');
+        if (!fs.existsSync(fileName)) {
             fs.writeFile(fileName, configdata, (err) => {
                 if (err) {
                     if (err.code == 'ENOENT') {
-                        myEventEmitter.emit('event', fileName, 'ERROR', 'The ${fileName}  was in error, no file or directory.');
+                        myEventEmitter.emit('event', fileName, 'ERROR', `The ${fileName} was in error, no file or directory.`);
                         console.log('No file or directory, has the directory been created');
                     } else {
                         console.log(err);
                     }
                 } else {
-                    myEventEmitter.emit('event', fileName, 'INFO', 'The ${fileName}  was successfully written to disk.');
+                    myEventEmitter.emit('event', fileName, 'INFO', `The ${fileName} was successfully written to disk.`);
                     console.log('Data written to config file.');
                 }
             });
         } else {
+            myEventEmitter.emit('event', fileName, 'INFO', `The ${fileName} already exists.`);
             console.log('Config file already exists');
         }
     } catch (error) {
-        console.error('Error creating files:', error);
+        if (error.code == 'ENOENT')
+            console.log('no file or directory');
+        else
+            console.log(error);
     }
 }
 
 
-
-async function createFolders() {
+function createFolders() {
     if (DEBUG) console.log('init.createFolders()');
     let mkcount = 0;
-    for (const folder of folders) {
+    folders.forEach(folder => {
         if (DEBUG) console.log(folder);
         try {
-            const folderPath = path.join(__dirname, folder);
-            if (!fs.existsSync(folderPath)) {
-                await fsPromises.mkdir(folderPath);
+            if (!fs.existsSync(path.join(__dirname, folder))) {
+                fsPromises.mkdir(path.join(__dirname, folder));
                 mkcount++;
             }
+              
+            
         } catch (err) {
             console.log(err);
         }
-    }
+    });
     if (mkcount === 0) {
         console.log('All folders already exist.');
     } else if (mkcount <= folders.length) {
