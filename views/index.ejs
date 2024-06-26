@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Token</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        form { margin-bottom: 20px; }
+        input { padding: 5px; margin-right: 10px; }
+        button { padding: 5px 10px; }
+        .error { color: red; }
+    </style>
+    <script>
+        function validateForm() {
+            const username = document.getElementById('username').value;
+            if (!username || !/^[a-zA-Z0-9_]+$/.test(username)) {
+                alert('Invalid username. Please use only letters, numbers, and underscores.');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h1>Generate Token</h1>
+    <form action="/generate-token" method="POST" onsubmit="return validateForm()">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <button type="submit">Generate Token</button>
+    </form>
+    <% if (token) { %>
+        <h2>Your Token: <%= token %></h2>
+    <% } %>
+    <% if (error) { %>
+        <p class="error"><%= error %></p>
+    <% } %>
+</body>
+</html>
